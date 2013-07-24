@@ -9,7 +9,7 @@ import datetime
 from collections import defaultdict
 import ConfigParser
 config = ConfigParser.ConfigParser()
-config.read(app.root_path + "/radiomon.ini")
+config.read(app.root_path + "/radiomon.conf")
 
 @app.before_request
 def before_request():
