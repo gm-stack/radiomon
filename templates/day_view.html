@@ -1,0 +1,18 @@
+<div class="box">
+		<div class="day_header" id="head-{{ day }}">{{ day }}</div>
+		<div class="body" id="{{ datetime.datetime.strptime(day,"%Y%m%d").strftime("%A ")+day }}">
+			<table class="graph"><tr>
+				{{ gengraph(day,txlist)|safe }}
+			</tr></table>
+			<img src="static/timescale.png" /><br/>
+			<table class="translist"><tr>
+			{% for hour in range(24) %}
+				<td class="transcell">
+				{% for rec in txs[hour] %}
+					<a href="#" onclick="player('{{ day }}','{{ rec }}')">{{ rec }}</a><br/>
+				{% endfor %}
+				</td>
+			{% endfor %}
+			</tr></table>
+		</div>
+	</div>
