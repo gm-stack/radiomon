@@ -3,3 +3,8 @@ host = localhost
 user = user
 passwd = pass
 db = radiomon
+
+[record]
+threshold = 600
+chopfromstart = 512
+initialtimeout = 25
