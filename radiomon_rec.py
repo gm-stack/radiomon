@@ -1,4 +1,4 @@
-#!/usr/bin/python2.6
+#!/usr/bin/env python
 
 import pyaudio
 import wave
@@ -7,15 +7,16 @@ import struct
 import time
 import os
 import subprocess
-import MySQLdb
+import MySQLdb, MySQLdb.cursors
 import traceback
+import ConfigParser
 
 config = ConfigParser.ConfigParser()
 config.read("radiomon.conf")
 
 p = pyaudio.PyAudio()
 
-stream = p.open(format=pyaudio.paInt16, channels=1, rate=11025, input=True, frames_per_buffer=256)
+stream = p.open(format=pyaudio.paInt16, channels=1, rate=11025, input=True, frames_per_buffer=256, input_device_index=7)
 
 def openwav(filename):
 	wf = wave.open(filename,'wb')
@@ -42,6 +43,10 @@ conn = MySQLdb.connect(host=config.get("mysql","host"),
 			cursorclass=MySQLdb.cursors.DictCursor, charset='utf8')
 cursor = conn.cursor()
 
+threshold = config.get("record","threshold")
+chopfromstart = config.get("record","chopfromstart")
+initialtimeout = config.get("record","initialtimeout")
+
 try:
 	while True:
 		try:
@@ -63,6 +68,7 @@ try:
 						wf.close()
 						subprocess.Popen(["/usr/bin/oggenc","-b","24",filename], stdout=sys.stdout)
 						try:
+							conn.ping()
 							cursor.execute("INSERT INTO transmissioninfo (datetime,comments,category,lastedit,txinfo) VALUES (%(datetime)s, '', 'none', 'initial', %(txinfo)s)",
 										{'datetime': datecode + timecode, 'txinfo': dfcont})
 						except:
