@@ -13,7 +13,7 @@ config.read(app.root_path + "/radiomon.conf")
 
 @app.before_request
 def before_request():
-	g.conn = conn = MySQLdb.connect(host=config.get("mysql","host"),
+	g.conn = MySQLdb.connect(host=config.get("mysql","host"),
 			user=config.get("mysql","user"),
 			passwd=config.get("mysql","passwd"),
 			db=config.get("mysql","db"), 
